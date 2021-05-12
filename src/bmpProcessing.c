@@ -69,16 +69,3 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
     fclose(filePtr);
     return bitmapImage;
 }
-
-int main() {
-    BITMAPINFOHEADER bitmapInfoHeader = {NULL};
-    uint8_t *bitmapData;
-    FILE *fp;
-    bitmapData = LoadBitmapFile("res/Audrey.bmp",&bitmapInfoHeader);
-    fp = fopen("res/example.txt", "w");
-    fwrite(bitmapData,1, sizeof(bitmapData), fp);
-    fclose(fp);
-
-    return 0;
-    
-}

@@ -65,11 +65,11 @@ uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
 
 }
 
-int main (int argc, char * argv[]) {
-    uint16_t x = 0x0163;
-    uint16_t y;
+// int main (int argc, char * argv[]) {
+//     uint16_t x = 0x0163;
+//     uint16_t y;
 
-    multiplyModGenP(0x0054, 0x001D);
+//     multiplyModGenP(0x0054, 0x001D);
     
-    return 0;
-}
+//     return 0;
+// }
