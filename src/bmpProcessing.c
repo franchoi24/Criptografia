@@ -38,13 +38,13 @@ typedef struct tagBITMAPINFOHEADER
 #pragma pack(pop)
 
 
-unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
+uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
 {
     FILE *filePtr; //our file pointer
     BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
-    unsigned char *bitmapImage;  //store image data
+    uint8_t *bitmapImage;  //store image data
     int imageIdx=0;  //image index counter
-    unsigned char tempRGB;  //our swap variable
+    uint8_t tempRGB;  //our swap variable
 
     //open filename in read binary mode
     filePtr = fopen(filename,"rb");
@@ -70,7 +70,7 @@ unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader
     fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
 
     //allocate enough memory for the bitmap image data
-    bitmapImage = (unsigned char*)malloc(bitmapInfoHeader->biSizeImage);
+    bitmapImage = (uint8_t*)malloc(bitmapInfoHeader->biSizeImage);
 
     //verify memory allocation
     if (!bitmapImage)
@@ -104,11 +104,11 @@ unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader
 }
 
 int main() {
-    BITMAPINFOHEADER bitmapInfoHeader;
-    unsigned char *bitmapData;
+    BITMAPINFOHEADER bitmapInfoHeader = {NULL};
+    uint8_t *bitmapData;
     FILE *fp;
-    bitmapData = LoadBitmapFile("/Users/franciscochoi/Desktop/Criptografia/res/greenland_grid_velo.bmp",&bitmapInfoHeader);
-    fp = fopen("/Users/franciscochoi/Desktop/Criptografia/res/example.txt", "w");
+    bitmapData = LoadBitmapFile("res/Audrey.bmp",&bitmapInfoHeader);
+    fp = fopen("res/example.txt", "w");
     fwrite(bitmapData,1, sizeof(bitmapData), fp);
     fclose(fp);
 
