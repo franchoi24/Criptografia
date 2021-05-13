@@ -29,18 +29,30 @@ int main (int argc, char *argv[]) {
     int k = 5;
     int secretBlockCount = secretBmpIH.biSizeImage / k;
 
-    // Read shade image
+    // For each shade image
 
-    BITMAPINFOHEADER shadeBmpIH = {0};
-    uint8_t * shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpIH);
+        // Read shade image
 
-    // Adjust shade image to rubric specification
-    turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
+        BITMAPINFOHEADER shadeBmpIH = {0};
+        uint8_t * shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpIH);
 
-    uint8_t * currentBlockStart;
-    for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo) {
-        
-    }
+        // Adjust shade image to rubric specification
+        turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
+        // calculate number of 2x2 blocks that fit horizontal line in shade image
+        int shadeXBlockNo = shadeBmpIH.biWidth / 2;
+        uint8_t * currentBlockStart;
+        for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo, currentBlockStart += k) {
+            // for each blockNo, get XUVW. Then just calculate F(X) and replace where necessary
+            int Xind, Uind, Vind, Wind;
+            // just do the math
+            Xind =  (currentBlockNo / shadeXBlockNo) * 2 * shadeBmpIH.biWidth + (currentBlockNo % shadeXBlockNo) * 2;
+            Vind = ((currentBlockNo / shadeXBlockNo) * 2 + 1) * shadeBmpIH.biWidth + (currentBlockNo % shadeXBlockNo) * 2;
+            Uind = Vind + 1;
+            Wind = Xind + 1;
+
+            // Now, evaluate polynomial in Xind
+                 
+        }
 
     return 0;
 }
