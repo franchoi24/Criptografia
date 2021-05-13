@@ -2,35 +2,10 @@
 #include <stdio.h>
 #include "../include/bmpProcessing.h"
 #include "../include/galoisFields.h"
-
-static void turnRowsUpsideDown(uint8_t * bitmapData, BITMAPINFOHEADER infoHeader) {
-    int width = infoHeader.biWidth;
-    int height = infoHeader.biHeight;
-
-    int upperIndex, lowerIndex;
-    uint8_t tmp;
-
-    for (int h = 0; h < height/2; h++) {
-        upperIndex = h;
-        lowerIndex = height - 1 - h;
-        for (int i = 0; i < width; i++) {
-            // just swap row bytes
-            tmp = bitmapData[upperIndex * width + i];
-            bitmapData[upperIndex * width + i] = bitmapData[lowerIndex * width + i];
-            bitmapData[lowerIndex * width + i] = tmp;
-        }
-    }
-}
-
-// Bit twiddling hacks, stackoverflow
-
-char calcParityBit (unsigned char v)
-{
-    return (0x6996u >> ((v ^ (v >> 4)) & 0xf)) & 1;
-}
+#include "../include/utils.h"
 
 
-int main (int argc, char *argv[]) {
+int encrypt () {
     BITMAPINFOHEADER secretBmpIH = {0};
     BITMAPFILEHEADER secretBmpFH = {0};
     BITMAPDATA secretBitmapData;

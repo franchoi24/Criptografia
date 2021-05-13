@@ -44,5 +44,5 @@ typedef struct tagBITMAPDATA {
 // user must free memory
 BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader);
 void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, BITMAPDATA bitmapImage);
-
+void turnRowsUpsideDown(uint8_t * bitmapData, BITMAPINFOHEADER infoHeader);
 #endif

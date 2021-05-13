@@ -101,3 +101,22 @@ void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     fwrite(bitmapImage.data, bitmapInfoHeader->biSizeImage, 1, fd);
     fclose(fd);
 }
+
+void turnRowsUpsideDown(uint8_t * bitmapData, BITMAPINFOHEADER infoHeader) {
+    int width = infoHeader.biWidth;
+    int height = infoHeader.biHeight;
+
+    int upperIndex, lowerIndex;
+    uint8_t tmp;
+
+    for (int h = 0; h < height/2; h++) {
+        upperIndex = h;
+        lowerIndex = height - 1 - h;
+        for (int i = 0; i < width; i++) {
+            // just swap row bytes
+            tmp = bitmapData[upperIndex * width + i];
+            bitmapData[upperIndex * width + i] = bitmapData[lowerIndex * width + i];
+            bitmapData[lowerIndex * width + i] = tmp;
+        }
+    }
+}
