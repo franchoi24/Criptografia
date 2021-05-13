@@ -5,10 +5,10 @@
 
 // https://stackoverflow.com/questions/14279242/read-bitmap-file-into-structure
 
-uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
+uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader)
 {
     FILE *filePtr; //our file pointer
-    BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
+    // BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
     uint8_t *bitmapImage;  //store image data
     int imageIdx=0;  //image index counter
     uint8_t tempRGB;  //our swap variable
@@ -20,10 +20,10 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
 
 
     //read the bitmap file header
-    fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER),1,filePtr);
+    fread(bitmapFileHeader, sizeof(BITMAPFILEHEADER),1,filePtr);
 
     //verify that this is a bmp file by check bitmap id
-    if (bitmapFileHeader.bfType !=0x4D42)
+    if (bitmapFileHeader->bfType !=0x4D42)
     {
         fclose(filePtr);
         return NULL;
@@ -34,7 +34,7 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
     fread(bitmapInfoHeader, sizeof(BITMAPINFOHEADER),1,filePtr); 
 
     //move file point to the beginning of bitmap data
-    fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+    fseek(filePtr, bitmapFileHeader->bfOffBits, SEEK_SET);
 
     // weird stuff. Sometimes biSizeImage is not present, but width and height are
     if (bitmapInfoHeader->biSizeImage == 0) {
@@ -73,4 +73,22 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
     //close file and return bitmap iamge data
     fclose(filePtr);
     return bitmapImage;
+}
+
+void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, uint8_t * bitmapImage) {
+    FILE * fd = fopen("res/newImg.bmp", "w");
+    fwrite(bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, fd);
+    fwrite(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fd);
+
+    //swap the r and b values to get RGB (bitmap is BGR)
+    uint8_t tempRGB;
+    for (int imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
+    {
+        tempRGB = bitmapImage[imageIdx];
+        bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
+        bitmapImage[imageIdx + 2] = tempRGB;
+    }
+
+    fwrite(bitmapImage, bitmapInfoHeader->biSizeImage, 1, fd);
+    fclose(fd);
 }

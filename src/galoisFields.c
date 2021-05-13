@@ -18,13 +18,12 @@ static uint8_t findDegree(uint16_t p) {
     for (d = 0; p != 0; d++) {
         p = p >> 1;
     }
-    return (d==16) ? d-2: d-1;
+    return (d==16) ? d-2: ((d==0) ? d :  d-1);
 }
 
 uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
 
     // Multiplication part
-    
     // find bits set to 1; first find largest polynomial
     uint16_t sP, lP; 
     if (p1 > p2) {

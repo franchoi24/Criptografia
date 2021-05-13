@@ -32,8 +32,9 @@ char calcParityBit (unsigned char v)
 
 int main (int argc, char *argv[]) {
     BITMAPINFOHEADER secretBmpIH = {0};
+    BITMAPFILEHEADER secretBmpFH = {0};
     uint8_t *secretBitmapData;
-    secretBitmapData = LoadBitmapFile("res/Audrey.bmp",&secretBmpIH);
+    secretBitmapData = LoadBitmapFile("res/Audrey.bmp",&secretBmpFH,&secretBmpIH);
 
     int k = 5;
     int secretBlockCount = secretBmpIH.biSizeImage / k;
@@ -43,7 +44,8 @@ int main (int argc, char *argv[]) {
         // Read shade image
 
         BITMAPINFOHEADER shadeBmpIH = {0};
-        uint8_t * shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpIH);
+        BITMAPFILEHEADER shadeBmpFH = {0};
+        uint8_t * shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpFH, &shadeBmpIH);
 
         // Adjust shade image to rubric specification
         turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
@@ -68,11 +70,10 @@ int main (int argc, char *argv[]) {
             Wind = Xind + 1;
 
             // Now, evaluate polynomial in Xind
-            F_X = 0x0;
+            F_X = 0x0000;
             for (int pow = 0; pow < k; pow++) {
-                F_X ^= multiplyModGenP(currentBlockStart[pow], galoisPower(shadeBitmapData[Xind], pow) );
+                F_X ^= multiplyModGenP((uint16_t) currentBlockStart[pow], galoisPower((uint16_t) shadeBitmapData[Xind], pow) );
             }
-            
             FxByte = (uint8_t) F_X;
         
             // Having F_X, change values for U, V and W
@@ -93,9 +94,8 @@ int main (int argc, char *argv[]) {
         // save the image to see if it works
         turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
 
-        FILE * fd = fopen("res/newImg.bmp", "w");
-        fwrite(&shadeBmpIH, sizeof(shadeBmpIH), 1, fd);
-        fwrite(shadeBitmapData, shadeBmpIH.biSizeImage, 1, fd);
+        writeBitmapToFile("res/newImg.bmp", &shadeBmpFH, &shadeBmpIH, shadeBitmapData);
+
 
     return 0;
 }
