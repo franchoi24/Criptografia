@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-static const uint16_t generatingPolynomial = 0x0163;
+const uint16_t generatingPolynomial = 0x0163;
 static const int CARDINALITY = 256;
 static const uint8_t WORD_BIT_LENGTH = 16;
 
@@ -14,9 +14,9 @@ uint16_t sumPolynomials(uint16_t p1, uint16_t p2) {
 }
 
 // Find degree (aka index of most significant bit set to 1)
-static uint8_t findDegree(uint16_t p) {
+static uint16_t findDegree(uint16_t p) {
     int d;
-    for (d = 0; d < 16 && p != 0; d++) {
+    for (d = 0; d < 16 && p > 0; d++) {
         p = p >> 1;
     }
     return (d==16) ? d-2: ((d==0) ? d :  d-1);
@@ -26,6 +26,7 @@ uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
 
     // Multiplication part
     // find bits set to 1; first find largest polynomial
+    if (p1 % CARDINALITY == 0 || p2 % CARDINALITY == 0) return 0;
     uint16_t sP, lP; 
     if (p1 > p2) {
         lP = p1; sP = p2;
@@ -57,7 +58,8 @@ uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
     uint16_t genPDegree = findDegree(generatingPolynomial);
     uint16_t restDegree = findDegree(rest);
     while (restDegree - genPDegree >= 0) {
-        rest = rest ^ (generatingPolynomial << (restDegree-genPDegree));
+        rest  ^= (generatingPolynomial << (unsigned char)(restDegree-genPDegree));
+        if (findDegree(rest) > restDegree) printf("WTF %d vs %d", findDegree(rest), restDegree);
         restDegree = findDegree(rest);
     }
 
@@ -75,7 +77,8 @@ uint16_t galoisPower(uint16_t x, int pow) {
 
 uint16_t dividePolynomials (uint16_t dividend, uint16_t divisor) {
 
-    for (uint16_t i = 0; i < CARDINALITY; i++){
+    if (dividend == 0) return 0;
+    for (uint16_t i = 1; i < CARDINALITY; i++){
         // Logic behind this: find mult inverse of divisor
         if (multiplyModGenP(i, divisor) == 1) {
             // Then multiply dividend by it
