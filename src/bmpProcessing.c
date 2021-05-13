@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include "../include/bmpProcessing.h"
 
-// https://stackoverflow.com/questions/14279242/read-bitmap-file-into-structure
+// A modification of LoadBitmapFile from https://stackoverflow.com/questions/14279242/read-bitmap-file-into-structure
 
-uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader)
+BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader)
 {
     FILE *filePtr; //our file pointer
     // BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
@@ -13,10 +13,12 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     int imageIdx=0;  //image index counter
     uint8_t tempRGB;  //our swap variable
 
+    BITMAPDATA bitmapData = {NULL};
+
     //open filename in read binary mode
     filePtr = fopen(filename,"rb");
     if (filePtr == NULL)
-        return NULL;
+        return bitmapData;
 
 
     //read the bitmap file header
@@ -26,19 +28,24 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     if (bitmapFileHeader->bfType !=0x4D42)
     {
         fclose(filePtr);
-        return NULL;
+        return bitmapData;
     }
 
 
     //read the bitmap info header
     fread(bitmapInfoHeader, sizeof(BITMAPINFOHEADER),1,filePtr); 
 
+    int paddingSize = bitmapFileHeader->bfOffBits - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER);
+
+    uint8_t * padding = (uint8_t *) malloc(paddingSize);
+    fread(padding, paddingSize, 1, filePtr);
     //move file point to the beginning of bitmap data
-    fseek(filePtr, bitmapFileHeader->bfOffBits, SEEK_SET);
+    // fseek(filePtr, bitmapFileHeader->bfOffBits, SEEK_SET);
 
     // weird stuff. Sometimes biSizeImage is not present, but width and height are
     if (bitmapInfoHeader->biSizeImage == 0) {
         bitmapInfoHeader->biSizeImage = bitmapInfoHeader->biWidth * bitmapInfoHeader->biHeight;
+        bitmapInfoHeader->biClrUsed = 0;
     }
 
     //allocate enough memory for the bitmap image data
@@ -49,7 +56,7 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     {
         free(bitmapImage);
         fclose(filePtr);
-        return NULL;
+        return bitmapData;
     }
 
     //read in the bitmap image data
@@ -59,10 +66,10 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     if (bitmapImage == NULL)
     {
         fclose(filePtr);
-        return NULL;
+        return bitmapData;
     }
 
-    //swap the r and b values to get RGB (bitmap is BGR)
+    // swap the r and b values to get RGB (bitmap is BGR)
     // for (imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
     // {
     //     tempRGB = bitmapImage[imageIdx];
@@ -72,10 +79,13 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
 
     //close file and return bitmap iamge data
     fclose(filePtr);
-    return bitmapImage;
+    bitmapData.paddingSize = paddingSize;
+    bitmapData.padding = padding;
+    bitmapData.data = bitmapImage;
+    return bitmapData;
 }
 
-void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, uint8_t * bitmapImage) {
+void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, BITMAPDATA bitmapImage) {
     FILE * fd = fopen("res/newImg.bmp", "w");
     fwrite(bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, fd);
     fwrite(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fd);
@@ -88,8 +98,8 @@ void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     //     bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
     //     bitmapImage[imageIdx + 2] = tempRGB;
     // }
-    uint8_t padding = 0x01;
-    fwrite(&padding, sizeof(uint8_t), bitmapFileHeader->bfOffBits - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER), fd);
-    fwrite(bitmapImage, bitmapInfoHeader->biSizeImage, 1, fd);
+
+    fwrite(bitmapImage.padding, bitmapImage.paddingSize, 1, fd);
+    fwrite(bitmapImage.data, bitmapInfoHeader->biSizeImage, 1, fd);
     fclose(fd);
 }

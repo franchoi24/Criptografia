@@ -35,8 +35,14 @@ typedef struct tagBITMAPINFOHEADER
 
 #pragma pack(pop)
 
+typedef struct tagBITMAPDATA {
+    int paddingSize;
+    uint8_t * padding;
+    uint8_t * data;
+} BITMAPDATA;
+
 // user must free memory
-uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader);
-void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, uint8_t * bitmapImage);
+BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader);
+void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, BITMAPDATA bitmapImage);
 
 #endif

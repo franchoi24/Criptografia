@@ -33,7 +33,7 @@ char calcParityBit (unsigned char v)
 int main (int argc, char *argv[]) {
     BITMAPINFOHEADER secretBmpIH = {0};
     BITMAPFILEHEADER secretBmpFH = {0};
-    uint8_t *secretBitmapData;
+    BITMAPDATA secretBitmapData;
     secretBitmapData = LoadBitmapFile("res/Audrey.bmp",&secretBmpFH,&secretBmpIH);
 
     int k = 5;
@@ -45,13 +45,14 @@ int main (int argc, char *argv[]) {
 
         BITMAPINFOHEADER shadeBmpIH = {0};
         BITMAPFILEHEADER shadeBmpFH = {0};
-        uint8_t * shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpFH, &shadeBmpIH);
+        BITMAPDATA shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpFH, &shadeBmpIH);
 
         // Adjust shade image to rubric specification
-        turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
+        turnRowsUpsideDown(shadeBitmapData.data, shadeBmpIH);
         // calculate number of 2x2 blocks that fit horizontal line in shade image
+
         int shadeXBlockNo = shadeBmpIH.biWidth / 2;
-        uint8_t * currentBlockStart = secretBitmapData;
+        uint8_t * currentBlockStart = secretBitmapData.data;
 
         int Xind, Uind, Vind, Wind;
         uint8_t FxByte;
@@ -72,27 +73,27 @@ int main (int argc, char *argv[]) {
             // Now, evaluate polynomial in Xind
             F_X = 0x0000;
             for (int pow = 0; pow < k; pow++) {
-                F_X ^= multiplyModGenP((uint16_t) currentBlockStart[pow], galoisPower((uint16_t) shadeBitmapData[Xind], pow) );
+                F_X ^= multiplyModGenP((uint16_t) currentBlockStart[pow], galoisPower((uint16_t) shadeBitmapData.data[Xind], pow) );
             }
             FxByte = (uint8_t) F_X;
         
             // Having F_X, change values for U, V and W
 
             // first calculate them here for clarity
-            newW = (shadeBitmapData[Wind] & 0b11111000) | ((FxByte & 0b11100000)>>5); // Three highest bits of FX in 3 lowest bits of ~W
-            newV = (shadeBitmapData[Vind] & 0b11111000) | ((FxByte & 0b00011100)>>2); // Second group of 3 highest bits of FX in 3 lower bits of ~V
-            newU = (shadeBitmapData[Uind] & 0b11111000) | (FxByte & 0b00000011) | (calcParityBit(FxByte) << 2); // 2 LB of FX in 2 LB of ~U but also parity in 3rd lowest bit of ~U
+            newW = (shadeBitmapData.data[Wind] & 0b11111000) | ((FxByte & 0b11100000)>>5); // Three highest bits of FX in 3 lowest bits of ~W
+            newV = (shadeBitmapData.data[Vind] & 0b11111000) | ((FxByte & 0b00011100)>>2); // Second group of 3 highest bits of FX in 3 lower bits of ~V
+            newU = (shadeBitmapData.data[Uind] & 0b11111000) | (FxByte & 0b00000011) | (calcParityBit(FxByte) << 2); // 2 LB of FX in 2 LB of ~U but also parity in 3rd lowest bit of ~U
         
             // then write them off
-            shadeBitmapData[Wind] = newW;
-            shadeBitmapData[Vind] = newV;
-            shadeBitmapData[Uind] = newU;
+            shadeBitmapData.data[Wind] = newW;
+            shadeBitmapData.data[Vind] = newV;
+            shadeBitmapData.data[Uind] = newU;
             currentBlockStart += k;
             printf("Progress: %g\n", currentBlockNo/(double)secretBlockCount);
         }
 
         // save the image to see if it works
-        turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
+        turnRowsUpsideDown(shadeBitmapData.data, shadeBmpIH);
 
         writeBitmapToFile("res/newImg.bmp", &shadeBmpFH, &shadeBmpIH, shadeBitmapData);
 
