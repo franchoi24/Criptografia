@@ -36,6 +36,11 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
     //move file point to the beginning of bitmap data
     fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
 
+    // weird stuff. Sometimes biSizeImage is not present, but width and height are
+    if (bitmapInfoHeader->biSizeImage == 0) {
+        bitmapInfoHeader->biSizeImage = bitmapInfoHeader->biWidth * bitmapInfoHeader->biHeight;
+    }
+
     //allocate enough memory for the bitmap image data
     bitmapImage = (uint8_t*)malloc(bitmapInfoHeader->biSizeImage);
 
