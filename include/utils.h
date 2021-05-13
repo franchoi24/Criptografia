@@ -6,5 +6,6 @@
 // Bit twiddling hacks, stackoverflow
 
 char calcParityBit (unsigned char v);
+void lagrangeInterpolate(uint8_t * currentSecretBlock, uint8_t * currentXs, uint8_t * currentYs, int k);
 
 #endif

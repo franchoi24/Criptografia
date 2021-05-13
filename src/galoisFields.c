@@ -4,6 +4,7 @@
 #include <malloc.h>
 
 static const uint16_t generatingPolynomial = 0x0163;
+static const int CARDINALITY = 256;
 static const uint8_t WORD_BIT_LENGTH = 16;
 
 
@@ -15,7 +16,7 @@ uint16_t sumPolynomials(uint16_t p1, uint16_t p2) {
 // Find degree (aka index of most significant bit set to 1)
 static uint8_t findDegree(uint16_t p) {
     int d;
-    for (d = 0; p != 0; d++) {
+    for (d = 0; d < 16 && p != 0; d++) {
         p = p >> 1;
     }
     return (d==16) ? d-2: ((d==0) ? d :  d-1);
@@ -70,6 +71,17 @@ uint16_t galoisPower(uint16_t x, int pow) {
         result = multiplyModGenP(result, x);
     }
     return result;
+}
+
+uint16_t dividePolynomials (uint16_t dividend, uint16_t divisor) {
+
+    for (uint16_t i = 0; i < CARDINALITY; i++){
+        // Logic behind this: find mult inverse of divisor
+        if (multiplyModGenP(i, divisor) == 1) {
+            // Then multiply dividend by it
+            return multiplyModGenP(dividend, i);
+        }
+    }
 }
 
 // int main (int argc, char * argv[]) {
