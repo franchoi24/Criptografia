@@ -63,12 +63,12 @@ uint8_t *LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     }
 
     //swap the r and b values to get RGB (bitmap is BGR)
-    for (imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
-    {
-        tempRGB = bitmapImage[imageIdx];
-        bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
-        bitmapImage[imageIdx + 2] = tempRGB;
-    }
+    // for (imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
+    // {
+    //     tempRGB = bitmapImage[imageIdx];
+    //     bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
+    //     bitmapImage[imageIdx + 2] = tempRGB;
+    // }
 
     //close file and return bitmap iamge data
     fclose(filePtr);
@@ -81,14 +81,15 @@ void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     fwrite(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fd);
 
     //swap the r and b values to get RGB (bitmap is BGR)
-    uint8_t tempRGB;
-    for (int imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
-    {
-        tempRGB = bitmapImage[imageIdx];
-        bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
-        bitmapImage[imageIdx + 2] = tempRGB;
-    }
-
+    // uint8_t tempRGB;
+    // for (int imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
+    // {
+    //     tempRGB = bitmapImage[imageIdx];
+    //     bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
+    //     bitmapImage[imageIdx + 2] = tempRGB;
+    // }
+    uint8_t padding = 0x01;
+    fwrite(&padding, sizeof(uint8_t), bitmapFileHeader->bfOffBits - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER), fd);
     fwrite(bitmapImage, bitmapInfoHeader->biSizeImage, 1, fd);
     fclose(fd);
 }
