@@ -95,7 +95,7 @@ int main (int argc, char *argv[]) {
         // save the image to see if it works
         turnRowsUpsideDown(shadeBitmapData.data, shadeBmpIH);
 
-        writeBitmapToFile("res/newImg.bmp", &shadeBmpFH, &shadeBmpIH, shadeBitmapData);
+        writeBitmapToFile("res/newImg2.bmp", &shadeBmpFH, &shadeBmpIH, shadeBitmapData);
 
 
     return 0;

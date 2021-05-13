@@ -45,7 +45,6 @@ BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, B
     // weird stuff. Sometimes biSizeImage is not present, but width and height are
     if (bitmapInfoHeader->biSizeImage == 0) {
         bitmapInfoHeader->biSizeImage = bitmapInfoHeader->biWidth * bitmapInfoHeader->biHeight;
-        bitmapInfoHeader->biClrUsed = 0;
     }
 
     //allocate enough memory for the bitmap image data
@@ -86,10 +85,9 @@ BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, B
 }
 
 void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BITMAPINFOHEADER *bitmapInfoHeader, BITMAPDATA bitmapImage) {
-    FILE * fd = fopen("res/newImg.bmp", "w");
+    FILE * fd = fopen(filename, "w");
     fwrite(bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, fd);
     fwrite(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fd);
-
     //swap the r and b values to get RGB (bitmap is BGR)
     // uint8_t tempRGB;
     // for (int imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
