@@ -5,17 +5,21 @@
 int main (int argc, char *argv[]) {
     BITMAPINFOHEADER secretBmpIH = {0};
     uint8_t *secretBitmapData;
-    FILE *fp;
     secretBitmapData = LoadBitmapFile("res/Audrey.bmp",&secretBmpIH);
-    fp = fopen("res/example.txt", "w");
-    fwrite(secretBitmapData,1, sizeof(secretBitmapData), fp);
-    fclose(fp);
 
     int k = 5;
     int secretBlockCount = secretBmpIH.biSizeImage / k;
 
-    for (uint8_t * currentBlock; (secretBitmapData - currentBlock) / k < secretBlockCount; currentBlock += k) {
+    // Read shade image
 
+    BITMAPINFOHEADER shadeBmpIH = {0};
+    uint8_t * shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpIH);
+
+    // Adjust shade image to rubric specification
+
+    uint8_t * currentBlockStart;
+    for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo) {
+        
     }
 
     return 0;
