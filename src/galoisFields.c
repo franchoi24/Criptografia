@@ -65,6 +65,14 @@ uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
 
 }
 
+uint16_t galoisPower(uint16_t x, int pow) {
+    uint16_t result = 0x0001;
+    for (int i = 0; i < pow; i++) {
+        result = multiplyModGenP(result, x);
+    }
+    return result;
+}
+
 // int main (int argc, char * argv[]) {
 //     uint16_t x = 0x0163;
 //     uint16_t y;

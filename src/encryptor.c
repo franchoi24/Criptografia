@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../include/bmpProcessing.h"
+#include "../include/galoisFields.h"
 
 static void turnRowsUpsideDown(uint8_t * bitmapData, BITMAPINFOHEADER infoHeader) {
     int width = infoHeader.biWidth;
@@ -40,7 +41,7 @@ int main (int argc, char *argv[]) {
         turnRowsUpsideDown(shadeBitmapData, shadeBmpIH);
         // calculate number of 2x2 blocks that fit horizontal line in shade image
         int shadeXBlockNo = shadeBmpIH.biWidth / 2;
-        uint8_t * currentBlockStart;
+        uint8_t * currentBlockStart = secretBitmapData;
         for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo, currentBlockStart += k) {
             // for each blockNo, get XUVW. Then just calculate F(X) and replace where necessary
             int Xind, Uind, Vind, Wind;
@@ -51,7 +52,13 @@ int main (int argc, char *argv[]) {
             Wind = Xind + 1;
 
             // Now, evaluate polynomial in Xind
-                 
+            uint16_t F_X = 0x0;
+            for (int pow = 0; pow < k; pow++) {
+                F_X = sumPolynomials(F_X, multiplyModGenP(currentBlockStart[pow], galoisPower(shadeBitmapData[Xind], pow) ) );
+            }
+
+            // Having F_X, change values for U, V and W
+            
         }
 
     return 0;
