@@ -6,7 +6,7 @@
 #include "../include/utils.h"
 
 
-int main (int argc, char * argv[]) {
+int main2 (int argc, char * argv[]) {
 
     int k = 5;
     char shadesDirName[512] = "res/shades";
