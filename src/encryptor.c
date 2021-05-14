@@ -5,7 +5,7 @@
 #include "../include/utils.h"
 
 
-int encrypt () {
+int main2 () {
     BITMAPINFOHEADER secretBmpIH = {0};
     BITMAPFILEHEADER secretBmpFH = {0};
     BITMAPDATA secretBitmapData;
@@ -20,7 +20,7 @@ int encrypt () {
 
         BITMAPINFOHEADER shadeBmpIH = {0};
         BITMAPFILEHEADER shadeBmpFH = {0};
-        BITMAPDATA shadeBitmapData = LoadBitmapFile("res/Alfred.bmp", &shadeBmpFH, &shadeBmpIH);
+        BITMAPDATA shadeBitmapData = LoadBitmapFile("res/James.bmp", &shadeBmpFH, &shadeBmpIH);
 
         // Adjust shade image to rubric specification
         turnRowsUpsideDown(shadeBitmapData.data, shadeBmpIH);

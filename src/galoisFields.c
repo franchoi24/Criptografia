@@ -19,14 +19,14 @@ static uint16_t findDegree(uint16_t p) {
     for (d = 0; d < 16 && p > 0; d++) {
         p = p >> 1;
     }
-    return (d==16) ? d-2: ((d==0) ? d :  d-1);
+    return (d==0) ? d :  d-1;
 }
 
 uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
 
     // Multiplication part
     // find bits set to 1; first find largest polynomial
-    if (p1 % CARDINALITY == 0 || p2 % CARDINALITY == 0) return 0;
+    // if (p1 % CARDINALITY == 0 || p2 % CARDINALITY == 0);
     uint16_t sP, lP; 
     if (p1 > p2) {
         lP = p1; sP = p2;
@@ -78,6 +78,7 @@ uint16_t galoisPower(uint16_t x, int pow) {
 uint16_t dividePolynomials (uint16_t dividend, uint16_t divisor) {
 
     if (dividend == 0) return 0;
+    // if (divisor % CARDINALITY == 0);
     for (uint16_t i = 1; i < CARDINALITY; i++){
         // Logic behind this: find mult inverse of divisor
         if (multiplyModGenP(i, divisor) == 1) {
