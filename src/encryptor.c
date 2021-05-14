@@ -7,7 +7,7 @@
 #include "../include/utils.h"
 
 
-int main () {
+int main2 () {
     BITMAPINFOHEADER secretBmpIH = {0};
     BITMAPFILEHEADER secretBmpFH = {0};
     BITMAPDATA secretBitmapData;

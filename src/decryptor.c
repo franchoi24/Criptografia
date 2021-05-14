@@ -6,7 +6,7 @@
 #include "../include/utils.h"
 
 
-int main2 (int argc, char * argv[]) {
+int main (int argc, char * argv[]) {
 
     int k = 5;
     char shadesDirName[512] = "res/shades";
@@ -98,7 +98,7 @@ int main2 (int argc, char * argv[]) {
     secretBitmapData.padding = shadesBitmapData[0].padding;
     secretBitmapData.paddingSize = shadesBitmapData[0].paddingSize;
 
-    writeBitmapToFile("res/secretsecret.bmp", &shadesFileHeaders[0], &shadesInfoHeaders[0], secretBitmapData);
+    writeBitmapToFile("res/secretsecrets.bmp", &shadesFileHeaders[0], &shadesInfoHeaders[0], secretBitmapData);
 
     return 0;
 }

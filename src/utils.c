@@ -17,7 +17,7 @@ void lagrangeInterpolate(uint8_t * currentSecretBlock, uint8_t * Xs, uint8_t * Y
     for (int i = 0; i < k; i ++ ) {
         for (int q = 0; q < k; q++) {
             if (q != i) {
-                multAux = multiplyModGenP(multAux, dividePolynomials(Xs[q], multiplyModGenP(Xs[i], Xs[q])));
+                multAux = multiplyModGenP(multAux, dividePolynomials(Xs[q], Xs[i] ^ Xs[q]));
             }
         }
         sumAux ^= multiplyModGenP(Ys[i], multAux);
@@ -26,13 +26,15 @@ void lagrangeInterpolate(uint8_t * currentSecretBlock, uint8_t * Xs, uint8_t * Y
     currentSecretBlock[0] = sumAux;
 
     uint8_t yaux;
+    sumAux = 0x0;
     for (int kind = 1; kind < k; kind ++) {
-        uint8_t sumAux = 0x0;
-        yaux = dividePolynomials(multiplyModGenP(Ys[kind], currentSecretBlock[0]), Xs[kind]);
+        yaux = dividePolynomials(
+            multiplyModGenP(Ys[kind], currentSecretBlock[kind]),
+            Xs[kind]);
         for (int i = 0; i < k; i ++ ) {
             for (int q = 0; q < k; q++) {
                 if (q != i) {
-                    multAux = multiplyModGenP(multAux, dividePolynomials(Xs[q], multiplyModGenP(Xs[i], Xs[q])));
+                    multAux = multiplyModGenP(multAux, dividePolynomials(Xs[q], Xs[i] ^ Xs[q]));
                 }
             }
             sumAux ^= multiplyModGenP(yaux, multAux);
