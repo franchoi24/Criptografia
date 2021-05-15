@@ -78,7 +78,8 @@ uint16_t galoisPower(uint16_t x, int pow) {
 uint16_t dividePolynomials (uint16_t dividend, uint16_t divisor) {
 
     if (dividend == 0) return 0;
-    // if (divisor % CARDINALITY == 0);
+    if (divisor % CARDINALITY == 0)
+        printf("div0\n");
     for (uint16_t i = 1; i < CARDINALITY; i++){
         // Logic behind this: find mult inverse of divisor
         if (multiplyModGenP(i, divisor) == 1) {

@@ -80,9 +80,10 @@ int main1 () {
                             shadesBitmapData[nind].data[Xind] = shadesBitmapData[nind].data[Xind] + 1;
                         else {
                             printf("Equals 255, %d\n", currentBlockNo);
-                            shadesBitmapData[nind].data[Xind] = (shadesBitmapData[nind].data[Xind] + 1) % 256;
+                            shadesBitmapData[nind].data[Xind] = 1;//(shadesBitmapData[nind].data[Xind] + 1) % 256;
                         }
                 }
+
             }
             
             // for each blockNo, get XUVW. Then just calculate F(X) and replace where necessary
