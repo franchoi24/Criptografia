@@ -90,7 +90,7 @@ int main (int argc, char * argv[]) {
 
         // TODO Free everything...
 
-        printf("Progress: %g\n", currentBlockNo/(double)secretBlockCount);
+        // printf("Progress: %g\n", currentBlockNo/(double)secretBlockCount);
     }
 
     BITMAPDATA secretBitmapData = {0};

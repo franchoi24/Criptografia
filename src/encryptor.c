@@ -7,7 +7,7 @@
 #include "../include/utils.h"
 
 
-int main2 () {
+int main1 () {
     BITMAPINFOHEADER secretBmpIH = {0};
     BITMAPFILEHEADER secretBmpFH = {0};
     BITMAPDATA secretBitmapData;
@@ -66,17 +66,35 @@ int main2 () {
         uint16_t F_X;
 
         uint8_t currentEvaluatedFs[n];
-        int fail = 0;
 
         for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo) {
-            // for each blockNo, get XUVW. Then just calculate F(X) and replace where necessary
             
-            for (int nind = 0; nind < n & !fail; ++nind) {
+            // Correct for all different Xs
+
+            for (int nind = 0; nind < n; ++nind) {
+                Xind =  (currentBlockNo / shadeXBlockNo) * 2 * shadesInfoHeaders[nind].biWidth + (currentBlockNo % shadeXBlockNo) * 2;
+                for (int nind2 = 0; nind2 < n; ++nind2) {
+                    // Clearly separate cases of conflict
+                    if(nind != nind2 && shadesBitmapData[nind].data[Xind] == shadesBitmapData[nind2].data[Xind])
+                        if (shadesBitmapData[nind].data[Xind] < 255)
+                            shadesBitmapData[nind].data[Xind] = shadesBitmapData[nind].data[Xind] + 1;
+                        else {
+                            printf("Equals 255, %d\n", currentBlockNo);
+                            shadesBitmapData[nind].data[Xind] = (shadesBitmapData[nind].data[Xind] + 1) % 256;
+                        }
+                }
+            }
+            
+            // for each blockNo, get XUVW. Then just calculate F(X) and replace where necessary
+
+            for (int nind = 0; nind < n; ++nind) {
 
                 Xind =  (currentBlockNo / shadeXBlockNo) * 2 * shadesInfoHeaders[nind].biWidth + (currentBlockNo % shadeXBlockNo) * 2;
                 Vind = ((currentBlockNo / shadeXBlockNo) * 2 + 1) * shadesInfoHeaders[nind].biWidth + (currentBlockNo % shadeXBlockNo) * 2;
                 Uind = Vind + 1;
                 Wind = Xind + 1;
+
+                // check if two Xs are the same
 
                 // Now, evaluate polynomial in Xind
                 F_X = 0x0000;
@@ -103,7 +121,7 @@ int main2 () {
             // TODO check if fs are OK
 
             currentBlockStart += k;
-            printf("Progress: %g\n", currentBlockNo/(double)secretBlockCount);
+            // printf("Progress: %g\n", currentBlockNo/(double)secretBlockCount);
         }
 
         // save the images to see if it works
