@@ -80,7 +80,7 @@ int main (int argc, char * argv[]) {
         // }
 
         // With (X, T) pairs, interpolate using Lagrange
-        lagrangeInterpolate(currentSecretBlock, currentXs, currentTs, k);
+        gaussInterpolate(currentSecretBlock, currentXs, currentTs, k);
 
         // copy secret block to solution
         for (int kind = 0; kind < k; ++kind) {
