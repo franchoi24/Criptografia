@@ -2,6 +2,7 @@
 #include "../include/galoisFields.h"
 #include <stdio.h>
 #include <malloc.h>
+#include <stdlib.h>
 
 const uint16_t generatingPolynomial = 0x0163;
 static const int CARDINALITY = 256;

@@ -13,7 +13,7 @@ BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, B
     int imageIdx=0;  //image index counter
     uint8_t tempRGB;  //our swap variable
 
-    BITMAPDATA bitmapData = {NULL};
+    BITMAPDATA bitmapData = {0};
 
     //open filename in read binary mode
     filePtr = fopen(filename,"rb");
@@ -119,4 +119,9 @@ void turnRowsUpsideDown(uint8_t * bitmapData, BITMAPINFOHEADER infoHeader) {
             bitmapData[lowerIndex * width + i] = tmp;
         }
     }
+}
+
+void freeBitmapData(BITMAPDATA bmpData) {
+    free(bmpData.data);
+    free(bmpData.padding);
 }
