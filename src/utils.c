@@ -4,9 +4,22 @@
 // Bit twiddling hacks, stackoverflow
 
 
-char calcParityBit (unsigned char v)
+uint8_t calcParityBit (uint8_t v)
 {
     return (0x6996u >> ((v ^ (v >> 4)) & 0xf)) & 1;
+}
+
+// Meant for debugging
+int hasEqualBytes(uint8_t * bytes, int k) {
+    int j;
+    for (int i = 0; i < k-1; i++) {
+        for (j = i+1; j < k; j++) {
+            if (bytes[i] == bytes[j]) {
+                return 1;
+            }
+        } 
+    }
+    return 0;
 }
 
 void lagrangeInterpolate(uint8_t * currentSecretBlock, uint8_t * Xs, uint8_t * Ys, int k) {

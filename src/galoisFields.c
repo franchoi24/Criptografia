@@ -26,7 +26,7 @@ uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
 
     // Multiplication part
     // find bits set to 1; first find largest polynomial
-    // if (p1 % CARDINALITY == 0 || p2 % CARDINALITY == 0);
+    if (p1 % CARDINALITY == 0 || p2 % CARDINALITY == 0) return 0;
     uint16_t sP, lP; 
     if (p1 > p2) {
         lP = p1; sP = p2;

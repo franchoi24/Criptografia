@@ -13,7 +13,7 @@ int main1 () {
     BITMAPDATA secretBitmapData;
     secretBitmapData = LoadBitmapFile("res/Albert.bmp",&secretBmpFH,&secretBmpIH);
 
-    int k = 5;
+    int k = 4;
     int n = 6;
     int secretBlockCount = secretBmpIH.biSizeImage / k;
 
@@ -67,22 +67,29 @@ int main1 () {
 
         uint8_t currentEvaluatedFs[n];
 
+        int repeated = 0;
+
         for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo) {
             
             // Correct for all different Xs
 
             for (int nind = 0; nind < n; ++nind) {
                 Xind =  (currentBlockNo / shadeXBlockNo) * 2 * shadesInfoHeaders[nind].biWidth + (currentBlockNo % shadeXBlockNo) * 2;
-                for (int nind2 = 0; nind2 < n; ++nind2) {
-                    // Clearly separate cases of conflict
-                    if(nind != nind2 && shadesBitmapData[nind].data[Xind] == shadesBitmapData[nind2].data[Xind])
-                        if (shadesBitmapData[nind].data[Xind] < 255)
-                            shadesBitmapData[nind].data[Xind] = shadesBitmapData[nind].data[Xind] + 1;
-                        else {
-                            printf("Equals 255, %d\n", currentBlockNo);
-                            shadesBitmapData[nind].data[Xind] = 1;//(shadesBitmapData[nind].data[Xind] + 1) % 256;
+                do {
+                    repeated = 0;
+                    for (int nind2 = 0; nind2 < nind; ++nind2) {
+                        // Clearly separate cases of conflict
+                        if(nind != nind2 && shadesBitmapData[nind2].data[Xind] == shadesBitmapData[nind].data[Xind]) {
+                            repeated = 1;
+                            if (shadesBitmapData[nind].data[Xind] < 255)
+                                shadesBitmapData[nind].data[Xind] = shadesBitmapData[nind].data[Xind] + 1;
+                            else {
+                                printf("Equals 255, %d\n", currentBlockNo);
+                                shadesBitmapData[nind].data[Xind] = 1;//(shadesBitmapData[nind].data[Xind] + 1) % 256;
+                            }
                         }
-                }
+                    }
+                } while (repeated);
 
             }
             
@@ -118,8 +125,6 @@ int main1 () {
 
                 currentEvaluatedFs[nind] = FxByte;
             }
-
-            // TODO check if fs are OK
 
             currentBlockStart += k;
             // printf("Progress: %g\n", currentBlockNo/(double)secretBlockCount);

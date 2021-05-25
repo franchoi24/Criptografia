@@ -8,7 +8,7 @@
 
 int main (int argc, char * argv[]) {
 
-    int k = 5;
+    int k = 4;
     char shadesDirName[512] = "res/shades";
     if (shadesDirName[strlen(shadesDirName)-1] != '/') {
         strcpy(shadesDirName+strlen(shadesDirName), "/");
@@ -49,10 +49,10 @@ int main (int argc, char * argv[]) {
     int shadeXBlockNo = shadesInfoHeaders[0].biWidth / 2;
     // uint8_t * secretBlockPosition = secretImageData;
     uint8_t T;
-    int fail = 0;
+    long fail = 0;
     for (int currentBlockNo = 0; currentBlockNo < secretBlockCount; ++currentBlockNo) {
         
-        for (int kind = 0; kind < k & !fail; kind ++) {
+        for (int kind = 0; kind < k; kind ++) {
             // For each shade, get T
             Xind =  (currentBlockNo / shadeXBlockNo) * 2 * shadesInfoHeaders[kind].biWidth + (currentBlockNo % shadeXBlockNo) * 2;
             Vind = ((currentBlockNo / shadeXBlockNo) * 2 + 1) * shadesInfoHeaders[kind].biWidth + (currentBlockNo % shadeXBlockNo) * 2;
@@ -64,20 +64,20 @@ int main (int argc, char * argv[]) {
                         ((shadesBitmapData[kind].data[Uind] & 0b00000011));
 
             // Check parity bit
-            if (((shadesBitmapData[kind].data[Uind] & 0b00000100) >> 2) != calcParityBit(T))
+            if (((shadesBitmapData[kind].data[Uind] & 0b00000100) >> 2) != calcParityBit(T)){
                 // fail = 1
-                ;
+                fail = fail + 1; 
+                // printf("parity failed: %ld fails\n", fail);
+            }
 
             currentTs[kind] = T;
             // For each shade, get X
             currentXs[kind] = shadesBitmapData[kind].data[Xind];
         }
 
-        // TODO react to fail in a better way.
-        // if (fail) {
-        //     fail = 0;
-        //     continue;
-        // }
+        if (hasEqualBytes(currentXs, k)) {
+            printf("%p: Repeated values either in Xs, block's gonna fail\n", currentSecretBlock);
+        }
 
         // With (X, T) pairs, interpolate using Lagrange
         gaussInterpolate(currentSecretBlock, currentXs, currentTs, k);
@@ -97,8 +97,7 @@ int main (int argc, char * argv[]) {
     secretBitmapData.data = secretImageData;
     secretBitmapData.padding = shadesBitmapData[0].padding;
     secretBitmapData.paddingSize = shadesBitmapData[0].paddingSize;
-
+    printf("%d", secretBlockCount);
     writeBitmapToFile("res/secretsecrets.bmp", &shadesFileHeaders[0], &shadesInfoHeaders[0], secretBitmapData);
-
     return 0;
 }
