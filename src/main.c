@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 static void printUsageThenExit() {
-    printf("Usage: ./ss [d|r] secretImagePath k shadesPath");
+    printf("Usage: ./ss [d|r] secretImagePath k shadesPath\n");
     exit(1);
 }
 

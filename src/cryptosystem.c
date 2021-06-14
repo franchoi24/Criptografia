@@ -203,6 +203,15 @@ int decrypt (char * secretImage, int k, char * dirName) {
         }
     }
 
+    long imageSize = shadesInfoHeaders[0].biSizeImage;
+
+    for (int i = 0; i < k; i++) {
+        if (shadesInfoHeaders[i].biSizeImage != imageSize) {
+            printf("Error: Shades not all of the same size!\n");
+            exit(1);
+        }
+    }
+
     int secretImageSize = shadesInfoHeaders[0].biWidth * shadesInfoHeaders[0].biHeight;
     int secretBlockCount = secretImageSize / k;
 
