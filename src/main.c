@@ -15,7 +15,7 @@ int main (int argc, char * argv[]) {
     }
     int k = argv[3][0] - 48;
     if (k < 4 || k > 6) {
-        printf("k must be between 4 and 6");
+        printf("Error: k must be between 4 and 6 \n");
         exit(0);
     }
 

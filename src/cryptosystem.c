@@ -32,7 +32,7 @@ int encrypt (char * secretImage, int k, char * dirName) {
     BITMAPINFOHEADER secretBmpIH = {0};
     BITMAPFILEHEADER secretBmpFH = {0};
     BITMAPDATA secretBitmapData;
-    secretBitmapData = LoadBitmapFile("res/Albert.bmp",&secretBmpFH,&secretBmpIH);
+    secretBitmapData = LoadBitmapFile(secretImage ,&secretBmpFH,&secretBmpIH);
 
     int n = getNumberOfBmps(dirName);
     if (n < k) {

@@ -13,7 +13,7 @@ make
 En el directorio raíz ejecutar el comando 
 
 ```
-clean
+make clean
 ```
 
 ## Ejecución
