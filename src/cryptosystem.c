@@ -2,6 +2,9 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "../include/bmpProcessing.h"
 #include "../include/galoisFields.h"
 #include "../include/utils.h"
@@ -41,9 +44,18 @@ int encrypt (char * secretImage, int k, char * dirName) {
     }
     int secretBlockCount = secretBmpIH.biSizeImage / k;
 
+
+
     char shadesDirName[512], outputDirName[512];
     strcpy(shadesDirName, dirName);
-    strcpy(outputDirName, dirName);
+    sprintf(outputDirName, "%s-shades", dirName);
+
+    struct stat st = {0};
+
+    if (stat(outputDirName, &st) == -1) {
+        mkdir(outputDirName, 0700);
+    }
+
 
     if (shadesDirName[strlen(shadesDirName)-1] != '/') {
         strcpy(shadesDirName+strlen(shadesDirName), "/");
@@ -72,7 +84,7 @@ int encrypt (char * secretImage, int k, char * dirName) {
                 shadesBitmapData[index] = LoadBitmapFile(filePath, &(shadesFileHeaders[index]), &(shadesInfoHeaders[index]));
                 // Adjust shade image to rubric specification
                 turnRowsUpsideDown(shadesBitmapData[index].data, shadesInfoHeaders[index]);
-                sprintf(shadesPathList[index], "%s%s", outputDirName, dir->d_name);
+                sprintf(shadesPathList[index], "%sshade-%d-%s", outputDirName, index, dir->d_name);
                 index++;
             }
         }
@@ -159,7 +171,7 @@ int encrypt (char * secretImage, int k, char * dirName) {
         // save the images to see if it works
         for (int nind = 0; nind < n; nind++) {
             turnRowsUpsideDown(shadesBitmapData[nind].data, shadesInfoHeaders[nind]);
-            strcpy(shadesPathList[nind] + strlen(shadesPathList[nind]) - 4, "-shade.bmp");
+            strcpy(shadesPathList[nind] + strlen(shadesPathList[nind]) - 4, ".bmp");
             writeBitmapToFile(shadesPathList[nind], &shadesFileHeaders[nind], &shadesInfoHeaders[nind], shadesBitmapData[nind]);
             freeBitmapData(shadesBitmapData[nind]);
         }
