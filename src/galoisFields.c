@@ -88,6 +88,7 @@ uint16_t dividePolynomials (uint16_t dividend, uint16_t divisor) {
             return multiplyModGenP(dividend, i);
         }
     }
+    return 0xFFFF; // An impossible value in GF(2^8)
 }
 
 // int main (int argc, char * argv[]) {

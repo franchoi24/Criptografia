@@ -19,7 +19,6 @@ static int getNumberOfBmps(char * shadesDirName) {
     if (d) {
         char filePath[600];
         strcpy(filePath, shadesDirName);
-        int index = 0;
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".bmp") > 0) {
                 n+=1;
@@ -266,7 +265,7 @@ int decrypt (char * secretImage, int k, char * dirName) {
         //     printf("%p: Repeated values either in Xs, block's gonna fail\n", currentSecretBlock);
         // }
 
-        // With (X, T) pairs, interpolate using Lagrange
+        // With (X, T) pairs, interpolate using Gauss
         gaussInterpolate(currentSecretBlock, currentXs, currentTs, k);
 
         // copy secret block to solution

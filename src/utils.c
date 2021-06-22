@@ -58,7 +58,6 @@ void lagrangeInterpolate(uint8_t * currentSecretBlock, uint8_t * Xs, uint8_t * Y
 }
 
 void gaussInterpolate(uint8_t * currentSecretBlock, uint8_t * Xs, uint8_t * Ys, int k) {
-    uint8_t multAux = 0x1;
     uint8_t sumAux = 0x0;
 
     uint8_t A[k][k+1];

@@ -10,8 +10,6 @@ BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, B
     FILE *filePtr; //our file pointer
     // BITMAPFILEHEADER bitmapFileHeader; //our bitmap file header
     uint8_t *bitmapImage;  //store image data
-    int imageIdx=0;  //image index counter
-    uint8_t tempRGB;  //our swap variable
 
     BITMAPDATA bitmapData = {0};
 
@@ -68,14 +66,6 @@ BITMAPDATA LoadBitmapFile(char *filename, BITMAPFILEHEADER * bitmapFileHeader, B
         return bitmapData;
     }
 
-    // swap the r and b values to get RGB (bitmap is BGR)
-    // for (imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
-    // {
-    //     tempRGB = bitmapImage[imageIdx];
-    //     bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
-    //     bitmapImage[imageIdx + 2] = tempRGB;
-    // }
-
     //close file and return bitmap iamge data
     fclose(filePtr);
     bitmapData.paddingSize = paddingSize;
@@ -88,14 +78,7 @@ void writeBitmapToFile(char * filename, BITMAPFILEHEADER * bitmapFileHeader, BIT
     FILE * fd = fopen(filename, "w");
     fwrite(bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, fd);
     fwrite(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fd);
-    //swap the r and b values to get RGB (bitmap is BGR)
-    // uint8_t tempRGB;
-    // for (int imageIdx = 0;imageIdx < bitmapInfoHeader->biSizeImage;imageIdx+=3)
-    // {
-    //     tempRGB = bitmapImage[imageIdx];
-    //     bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
-    //     bitmapImage[imageIdx + 2] = tempRGB;
-    // }
+
 
     fwrite(bitmapImage.padding, bitmapImage.paddingSize, 1, fd);
     fwrite(bitmapImage.data, bitmapInfoHeader->biSizeImage, 1, fd);
