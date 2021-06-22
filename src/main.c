@@ -5,7 +5,7 @@
 
 static void printUsageThenExit() {
     printf("Usage: ./ss [d|r] imagenSecreta k directorio\n");
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 int main (int argc, char * argv[]) {
@@ -16,7 +16,7 @@ int main (int argc, char * argv[]) {
     int k = argv[3][0] - 48;
     if (k < 4 || k > 6) {
         printf("Error: k must be between 4 and 6 \n");
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
     if (strcmp(argv[1], "d") == 0) {

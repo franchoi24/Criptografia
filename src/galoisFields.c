@@ -48,7 +48,7 @@ uint16_t multiplyModGenP (uint16_t p1, uint16_t p2) {
                 break;
             default:
                 printf("Error multiplying - shifting bits from largest polynomial");
-                exit(1);
+                exit(EXIT_FAILURE);
                 //break;
         }
     }

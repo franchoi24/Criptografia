@@ -39,7 +39,7 @@ int encrypt (char * secretImage, int k, char * dirName) {
     int n = getNumberOfBmps(dirName);
     if (n < k) {
         printf("Error: Not enough images to distribute secret!\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     int secretBlockCount = secretBmpIH.biSizeImage / k;
 
@@ -210,7 +210,7 @@ int decrypt (char * secretImage, int k, char * dirName) {
         closedir(d);
         if (index < k) {
             printf("Error: Not enough images to recover secret!\n");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -219,7 +219,7 @@ int decrypt (char * secretImage, int k, char * dirName) {
     for (int i = 0; i < k; i++) {
         if (shadesInfoHeaders[i].biSizeImage != imageSize) {
             printf("Error: Shades not all of the same size!\n");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 
