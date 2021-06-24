@@ -253,7 +253,7 @@ int decrypt (char * secretImage, int k, char * dirName) {
             if (((shadesBitmapData[kind].data[Uind] & 0b00000100) >> 2) != calcParityBit(T)){
                 // fail = 1
                 fail = fail + 1; 
-                printf("Block %d: parity failed\n", currentBlockNo);
+                // printf("Block %d: parity failed\n", currentBlockNo);
             }
 
             currentTs[kind] = T;
